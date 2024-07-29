@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SLACK_CHANNEL: "#your-channel"  # Replace with your Slack channel
 
     steps:
       - name: Checkout Repository
@@ -35,4 +37,27 @@ jobs:
       - name: Upload to S3
         run: aws s3 sync build s3://farida-2001 --delete  # Replace with your bucket name
 
-      
+
+      - name: Send Slack Success Notification
+        if: success()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "channel": "general",
+              "text": "The workflow has successfully completed and the build has been uploaded to S3."
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Send Slack Failure Notification
+        if: failure()
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "channel": "general",
+              "text": "The workflow has failed. Please check the logs for more details."
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
