@@ -30,7 +30,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         npm install -g aws-cli
-        aws s3 sync ./build s3://YOUR_BUCKET_NAME --delete
+        aws s3 sync ./build s3://farida-2001 --delete
 
     - name: Invalidate CloudFront
       env:
